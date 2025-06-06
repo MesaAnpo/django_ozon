@@ -22,7 +22,16 @@ services:
    - db
    - redis
   command: celery -A config worker --loglevel=info
-
+ test:
+  build: .
+  volumes:
+   - .:/app
+  env_file:
+   - .env
+  depends_on:
+   - db
+   - redis
+  command: pytest --disable-warnings --maxfail=3
  redis:
   image: redis
   ports:

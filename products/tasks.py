@@ -9,9 +9,11 @@
 from core.semaphore import acquire_slot, release_slot
 import subprocess, json
 from celery import shared_task
+from products.models.models import ParsedProduct
+
 
 @shared_task
-def parse_with_node(task_data):
+def parse_with_node_and_save(task_data):
     if not acquire_slot():
         print("Парсеров запущено слишком много. Задача отложена")
         return "Too many running"
@@ -20,7 +22,14 @@ def parse_with_node(task_data):
             ["node", "parser/parser.js"],
             input=json.dumps(task_data).encode("utf-8")
         )
-        return json.loads(result)
+        data = json.loads(result)
+        for item in data:
+            ParsedProduct.objects.create(
+                title=item["title"],
+                price=item["price"],
+                link = item["link"],
+                )
+        return f"Сохранено {len(data)} товаров"
     except subprocess.CalledProcessError as e:
         return {"error": e.output.decode("utf-8")}
     finally:
