@@ -22,6 +22,7 @@ INSTALLED_APPS =[
     "rest_framework",
 
     "products",
+    "drf_spectacular",
     ]
 
 MIDDLEWARE = [
@@ -33,7 +34,21 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     ]
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS":"rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE":10,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_FILTER_BACJENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.OrderingFilter",
+        "rest_framework.filters.SearchFilter",
+        ],
+    }
 
+SPECTACULAR_SETTINGS = {
+    "TITLE": "OZON PARSER API",
+    "VERSION": "0.1.0",
+    }
 ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [

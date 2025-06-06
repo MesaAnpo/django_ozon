@@ -21,7 +21,11 @@ services:
   depends_on:
    - db
    - redis
-  command: celery -A config worker --loglevel=info
+  command: >
+   sh -c "
+     python manage.py migrate &&
+     celery -A config worker --loglevel=info
+   "
  test:
   build: .
   volumes:

@@ -22,12 +22,13 @@ def parse_with_node_and_save(task_data):
             ["node", "parser/parser.js"],
             input=json.dumps(task_data).encode("utf-8")
         )
-        data = json.loads(result)
-        for item in data:
+        decoded = result.decode()
+        data = json.loads(decoded)
+        for item in data["items"]:
             ParsedProduct.objects.create(
-                title=item["title"],
+                title=item["name"],
                 price=item["price"],
-                link = item["link"],
+                link = item.get("link", ""),
                 )
         return f"Сохранено {len(data)} товаров"
     except subprocess.CalledProcessError as e:

@@ -7,4 +7,4 @@ pytest-django
 rq==1.16
 redis==5.0.3
 celery==5.3.6
-
+drf-spectacular==0.28.0
