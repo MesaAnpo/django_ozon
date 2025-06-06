@@ -1,6 +1,10 @@
 # Конфигурации и секреты
 .env
 
+# Мусор от реакта
+/templates/build/
+/frontend/node_modules/
+
 # Кэш пайтона
 __pycache__/
 *.pyc

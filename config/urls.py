@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
+from landing.main_endpoints import index_point
 
 urlpatterns = [
-	path("admin/",admin.site.urls)
+	path("admin/",admin.site.urls),
+    path('', index_point, name="index"),
 	]
