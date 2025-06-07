@@ -6,17 +6,23 @@ export default function ProductTable() {
     const [ordering, setOrdering] = useState("price");
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(false);
-
-    const fetchProducts = async () => {
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    
+    const fetchProducts = async (pageToFetch = 1) => {
         setLoading(true);
         try {
             const res = await axios.get("/products/", {
-                params: { ordering, search },
+                params: { ordering, search, page: pageToFetch },
             });
-            setProducts(res.data.results || []);
+            const newProducts = res.data.results || [];
+
+            setProducts(prev => pageToFetch === 1 ? newProducts : [...prev, ...newProducts]);
+            setHasMore(Boolean(res.data.next));
+            setPage(pageToFetch);
         } catch (err) {
             console.error("Ошибка загрузки товаров", err);
-            setProducts([]);
+            //setProducts([]);
         } finally {
             setLoading(false);
         }
@@ -26,9 +32,23 @@ export default function ProductTable() {
 Улыбнитесь
 */
     useEffect(() => {
-        fetchProducts();
+        fetchProducts(1);
     },[ordering, search]);
 
+    useEffect(() => {
+        const container = document.getElementById("scroll-container");
+        if (!container) return;
+        const handleScroll = () => {
+            const nearBottom = container.scrollTop+ container.clientHeight >= container.scrollHeight - 100;           
+            if (nearBottom && !loading && hasMore){
+                        fetchProducts(page + 1);
+                }
+            };
+
+            container.addEventListener("scroll", handleScroll);
+            return () => container.removeEventListener("scroll", handleScroll);
+    }, [loading, hasMore, page]);
+    
     return (
     <div className="p-4 bg-white rounded shadow mt-4">
         <div className="flex items-center justify-between mb-4">
@@ -47,6 +67,8 @@ export default function ProductTable() {
                     Сортировать по цене {ordering === "price" ? "↓" : "↑"}
             </button>
         </div>
+        <div id="scroll-container"
+        className="h-[400px] overflow-y-auto border rounded">
         {loading ? (
             <p className="text-gray-500">Загрузка...</p>
         ):(
@@ -77,6 +99,10 @@ export default function ProductTable() {
             </tbody>
         </table>
         )}
+        {loading && products.length > 0 && (
+             <p className="text-center text-sm text-gray-400 py-2">Загрузка...</p>
+        )}
+        </div>
     </div>
     );
 }

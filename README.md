@@ -20,7 +20,7 @@ API Endpoints:
 * POST /API/V1/LOGOUT
 * GET /API/V1/PRODUCTS/
 * GET /API/DOCS/
-
+* GET /API/V1/AUTH-STATUS
 
 доп:
 
