@@ -16,5 +16,15 @@ docker-compose ip --build
 API Endpoints:
 
 * POST /API/V1/PARSE/
+* POST /API/V1/LOGIN
+* POST /API/V1/LOGOUT
 * GET /API/V1/PRODUCTS/
 * GET /API/DOCS/
+
+
+доп:
+
+собрать реакт 
+cd frotend
+npm run build
+кинуть build в templates
